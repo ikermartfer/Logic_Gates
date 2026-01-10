@@ -17,7 +17,7 @@ VOLTAGE=True
 GROUND=False
 ONE=True
 ZERO=False
-#Logic Gates (remaining: XOR,NXOR)
+#Logic Gates 
 NOT=lambda input: (         #2 transistors
     MIDDLE(
         N(input)(GROUND)
@@ -27,7 +27,7 @@ NOT=lambda input: (         #2 transistors
 )
 AND=lambda input1: lambda input2: (         #4 transistors
     MIDDLE(
-        SERIES(
+        PARALLEL(
             P(input1)(GROUND)
         )(
             P(input2)(GROUND)
@@ -40,10 +40,9 @@ AND=lambda input1: lambda input2: (         #4 transistors
         )
     )
 )
-NAND= lambda input1: lambda input2: NOT(AND(input1)(input2))        #6 transistors
-NOR=lambda input1: lambda input2: (         #4 transistors
+NAND= lambda input1: lambda input2: (         #4 transistors
     MIDDLE(
-        SERIES(
+        PARALLEL(
             P(input1)(VOLTAGE)
         )(
             P(input2)(VOLTAGE)
@@ -56,10 +55,53 @@ NOR=lambda input1: lambda input2: (         #4 transistors
         )
     )
 )
-OR=lambda input1: lambda input2: NOT(NOR(input1)(input2))           #6 transistors
-NXOR=lambda input1: lambda input2: (            #10 transistors
+NOR=lambda input1: lambda input2: (         #4 transistors
     MIDDLE(
-        OR(
+        SERIES(
+            P(input1)(VOLTAGE)
+        )(
+            P(input2)(VOLTAGE)
+        )
+    )(
+        PARALLEL(
+            N(input1)(GROUND)
+        )(
+            N(input2)(GROUND)
+        )
+    )
+)
+OR=lambda input1: lambda input2: (         #4 transistors
+    MIDDLE(
+        SERIES(
+            P(input1)(GROUND)
+        )(
+            P(input2)(GROUND)
+        )
+    )(
+        PARALLEL(
+            N(input1)(VOLTAGE)
+        )(
+            N(input2)(VOLTAGE)
+        )
+    )
+)
+NXOR=lambda input1: lambda input2: (         #9 transistors
+    MIDDLE(
+        P(
+            SERIES(
+                N(input1)(GROUND)
+            )(
+                N(input2)(GROUND)
+            )
+        )(
+            PARALLEL(
+                N(input1)(GROUND)
+            )(
+                N(input2)(GROUND)
+            )
+        )
+    )(
+        PARALLEL(
             SERIES(
                 P(input1)(VOLTAGE)
             )(
@@ -72,10 +114,51 @@ NXOR=lambda input1: lambda input2: (            #10 transistors
                 N(input2)(VOLTAGE)
             )
         )
-    )(
-        GROUND
     )
 )
-XOR=lambda input1: lambda input2: NOT(NXOR(input1)(input2))         #12 transistors
-
-table(XOR)
+XOR=lambda input1: lambda input2: (         #9 transistors
+    MIDDLE(
+        P(
+            SERIES(
+                N(input1)(VOLTAGE)
+            )(
+                N(input2)(VOLTAGE)
+            )
+        )(
+            PARALLEL(
+                N(input1)(VOLTAGE)
+            )(
+                N(input2)(VOLTAGE)
+            )
+        )
+    )(
+        PARALLEL(
+            SERIES(
+                P(input1)(GROUND)
+            )(
+                P(input2)(GROUND)
+            )
+        )(
+            SERIES(
+                N(input1)(GROUND)
+            )(
+                N(input2)(GROUND)
+            )
+        )
+    )
+)
+# print(table(XOR))
+#For operations, we will represent numbers as lists of ONEs and ZEROs. Here are functions to translate them from list form to decimal
+def dectolist(n,b):
+    assert n<2**b, "Number needs more bits to be represented"
+    sol=[]
+    for i in range(b-1,-1,-1):
+        if n<2**i:
+            sol.append(ZERO)
+        else:
+            n-=2**i
+            sol.append(ONE)
+    return sol
+#1 bit sum
+SUM_1BIT=lambda N1: lambda N2: XOR(N1[0])(N2[0])
+#2 bit sum
