@@ -85,17 +85,17 @@ OR=lambda input1: lambda input2: (         #4 transistors
         )
     )
 )
-NXOR=lambda input1: lambda input2: (         #9 transistors
+NXOR=lambda input1: lambda input2: (         #8 transistors
     MIDDLE(
-        P(
+        PARALLEL(
             SERIES(
                 N(input1)(GROUND)
             )(
-                N(input2)(GROUND)
+                P(input2)(GROUND)
             )
         )(
-            PARALLEL(
-                N(input1)(GROUND)
+            SERIES(
+                P(input1)(GROUND)
             )(
                 N(input2)(GROUND)
             )
@@ -116,17 +116,17 @@ NXOR=lambda input1: lambda input2: (         #9 transistors
         )
     )
 )
-XOR=lambda input1: lambda input2: (         #9 transistors
+XOR=lambda input1: lambda input2: (         #8 transistors
     MIDDLE(
-        P(
+        PARALLEL(
             SERIES(
                 N(input1)(VOLTAGE)
             )(
-                N(input2)(VOLTAGE)
+                P(input2)(VOLTAGE)
             )
         )(
-            PARALLEL(
-                N(input1)(VOLTAGE)
+            SERIES(
+                P(input1)(VOLTAGE)
             )(
                 N(input2)(VOLTAGE)
             )
