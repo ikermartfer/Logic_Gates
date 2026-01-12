@@ -22,9 +22,7 @@ def PARALLEL(*args):
         return x
     return PARALLEL2
 MIDDLE=lambda input1: lambda input2: input1 or input2
-#Translation from True and False to one and zero for debugging
-NUM=lambda val: "ONE" if val else "ZERO"
-#Table for debugging
+#Table for checking logic gates work as intended
 def table(fn):
     print(f"ZERO ZERO = {fn(ZERO)(ZERO)}")
     print(f"ONE ZERO = {fn(ONE)(ZERO)}")
@@ -141,6 +139,23 @@ XOR=lambda input1: lambda input2: (         #8 transistors
     )
 )
 # print(table(XOR))
+
+#With the logic gates done I will start creating different functions
+IF=lambda condition: lambda clause: clause(N(condition)(VOLTAGE))
+IF_ELSE=lambda condition: lambda clause: lambda clauseifnot: (
+    PARALLEL(
+        SERIES(
+            N(condition),
+            clause
+        ),
+        SERIES(
+            P(condition),
+            clauseifnot
+        )
+    )(VOLTAGE)
+)
+
+
 #For operations, we will represent numbers as lists of ONEs and ZEROs. Here are functions to translate them from list form to decimal
 def dectolist(n,b):
     assert n<2**b, "Number needs more bits to be represented"
